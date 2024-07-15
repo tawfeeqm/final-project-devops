@@ -31,3 +31,4 @@ spec:
     targetPort: 8706
   selector:
     app: backend
+# Same as frontend. Create the deployment and the loadbalancer.

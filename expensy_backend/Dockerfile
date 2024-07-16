@@ -1,13 +1,17 @@
-FROM node:18
+FROM node:18-alpine
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
-COPY package*.json ./
+COPY package.json package-lock.json ./
 
 RUN npm install
 
-COPY . .
+COPY tsconfig.json ./
+
+COPY src ./src
+
+RUN npm run build
 
 EXPOSE 8706
 
-CMD ["npm", "start"]
+CMD ["node", "dist/server.js"]

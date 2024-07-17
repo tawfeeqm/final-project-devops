@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:  
+  replicas: 1
+  selector:
+    matchLabels:  
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:  
+      containers:
+        - name: backend
+          image: caergwedyn/final-backend:latest
+          ports:
+            - containerPort: 8706
+          env:
+          - name: DATABASE_URI
+            value: "mongodb://root:example@mongo:27017"
+          - name: MONGO_INITDB_ROOT_USERNAME
+            value: "root"
+          - name: MONGO_INITDB_ROOT_PASSWORD
+            value: "example"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8706
+      targetPort: 8706
+  selector:
+    app: backend

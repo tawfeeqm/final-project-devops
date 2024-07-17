@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:  
+  replicas: 1
+  selector:
+    matchLabels:  
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:  
+      containers:
+        - name: backend
+          image: gyaneshtiwari/expency-backend:latest
+          ports:
+            - containerPort: 8706
+          env:
+            - name: DATABASE_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: expensy-config
+                  key: DATABASE_URI
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: expensy-config
+                  key: MONGO_INITDB_ROOT_USERNAME
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: expensy-config
+                  key: MONGO_INITDB_ROOT_PASSWORD
+            - name: REDIS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: expensy-config
+                  key: REDIS_URL 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8706
+      targetPort: 8706
+  selector:
+    app: backend

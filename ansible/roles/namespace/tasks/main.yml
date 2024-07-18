@@ -3,5 +3,5 @@
   community.kubernetes.k8s:
     kubeconfig: ~/.kube/config
     state: present
-    definition: "{{ lookup('file', 'k8s/namespace.yml') }}"
+    definition: "{{ lookup('file', manifests_dir + '/namespace.yml') }}"
 

@@ -1,0 +1,7 @@
+---
+- name: Apply EBS StorageClass manifest
+  community.kubernetes.k8s:
+    kubeconfig: ~/.kube/config
+    state: present
+    definition: "{{ lookup('file', manifests_dir + /ebs-storage-class.yaml')}}"
+

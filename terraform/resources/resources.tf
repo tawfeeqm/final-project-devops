@@ -22,3 +22,4 @@ resource "aws_dynamodb_table" "terraform_lock" {
 
   depends_on = [aws_s3_bucket.expensy_terraform_state]
 }
+

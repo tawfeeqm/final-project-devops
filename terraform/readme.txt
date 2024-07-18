@@ -1,4 +1,5 @@
 In order to create the resources in the correct order follow this steps:
+
 1- Go to resources folder
 2- terraform init -backend=false
 3- terraform apply -auto-approve

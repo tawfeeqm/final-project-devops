@@ -37,3 +37,7 @@ output "eks_oidc_arn" {
 output "eks_autoscaler_arn" {
   value = module.eks_autoscaler.eks_cluster_autoscaler_arn
 }
+
+output "security_group_id" {
+  value = module.security_group.security_group_id
+}

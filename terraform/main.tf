@@ -1,20 +1,20 @@
+provider "aws" {
+  region = var.region
+}
+
 terraform {
   backend "s3" {
-
     bucket         = "expensy-terraform-state"
     key            = "states/terraform.tfstate"
     region         = "eu-north-1"
     dynamodb_table = "terraform-lock"
     encrypt        = true
   }
-}
 
-
-terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 3.0"
+      version = ">= 5.58.0"
     }
   }
 }
@@ -78,4 +78,10 @@ module "eks_autoscaler" {
   source          = "./modules/eks-autoscaler"
   eks_oidc_issuer = module.eks.eks_oidc_issuer
   eks_oidc_arn    = module.iam_oidc.eks_oidc_arn
+}
+
+module "security_group" {
+  source       = "./modules/security-group"
+  cluster_name = module.eks.cluster_name
+  vpc_id       = module.vpc.vpc_id
 }

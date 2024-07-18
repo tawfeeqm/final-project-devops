@@ -1,5 +1,5 @@
 provider "aws" {
-  region = var.region
+  region = local.region
 }
 
 terraform {
@@ -19,101 +19,88 @@ terraform {
   }
 }
 
+locals {
+  name   = "room2-final"
+  region = "eu-north-1"
+
+  vpc_cidr = "10.123.0.0/16"
+  azs      = ["eu-north-1a", "eu-north-1b"]
+
+  public_subnets  = ["10.123.1.0/24", "10.123.2.0/24"]
+  private_subnets = ["10.123.3.0/24", "10.123.4.0/24"]
+  intra_subnets   = ["10.123.5.0/24", "10.123.6.0/24"]
+
+  tags = {
+    Example = local.name
+  }
+}
+
 module "vpc" {
-  source   = "./modules/vpc"
-  vpc_cidr = var.vpc_cidr
-}
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "~> 4.0"
 
-module "subnets" {
-  source = "./modules/subnets"
-  vpc_id = module.vpc.vpc_id
-}
+  name = local.name
+  cidr = local.vpc_cidr
 
-module "igw" {
-  source = "./modules/igw"
-  vpc_id = module.vpc.vpc_id
-}
+  azs             = local.azs
+  private_subnets = local.private_subnets
+  public_subnets  = local.public_subnets
+  intra_subnets   = local.intra_subnets
 
-module "nat" {
-  source    = "./modules/nat"
-  vpc_id    = module.vpc.vpc_id
-  subnet_id = module.subnets.public_subnet_ids[0]
-  igw_id    = module.igw.igw_id
-}
+  enable_nat_gateway = true
 
-module "routes" {
-  source             = "./modules/routes"
-  vpc_id             = module.vpc.vpc_id
-  nat_gateway_id     = module.nat.nat_gateway_id
-  igw_id             = module.igw.igw_id
-  private_subnet_ids = module.subnets.private_subnet_ids
-  public_subnet_ids  = module.subnets.public_subnet_ids
+  public_subnet_tags = {
+    "kubernetes.io/role/elb" = 1
+  }
+
+  private_subnet_tags = {
+    "kubernetes.io/role/internal-elb" = 1
+  }
 }
 
 module "eks" {
-  source             = "./modules/eks"
-  vpc_id             = module.vpc.vpc_id
-  private_subnet_ids = module.subnets.private_subnet_ids
-  public_subnet_ids  = module.subnets.public_subnet_ids
-}
+  source  = "terraform-aws-modules/eks/aws"
+  version = "19.15.1"
 
-module "iam_oidc" {
-  source           = "./modules/iam-oidc"
-  eks_oidc_issuer  = module.eks.eks_oidc_issuer
-}
+  cluster_name                   = local.name
+  cluster_endpoint_public_access = true
 
-module "iam_test" {
-  source          = "./modules/iam-test"
-  eks_oidc_issuer = module.eks.eks_oidc_issuer
-  eks_oidc_arn    = module.iam_oidc.eks_oidc_arn
-}
-
-module "eks_autoscaler" {
-  source          = "./modules/eks-autoscaler"
-  eks_oidc_issuer = module.eks.eks_oidc_issuer
-  eks_oidc_arn    = module.iam_oidc.eks_oidc_arn
-}
-
-module "security_group" {
-  source       = "./modules/security-group"
-  cluster_name = module.eks.cluster_name
-  vpc_id       = module.vpc.vpc_id
-}
-
-module "eks_managed_node_group" {
-  source = "./modules/eks-managed-node-group"
-
-  name                              = "separate-eks-mng"
-  cluster_name                      = module.eks.cluster_name
-  cluster_version                   = "1.27"
-  subnet_ids                        = module.subnets.private_subnet_ids
-  cluster_primary_security_group_id = module.security_group.security_group_id
-  vpc_security_group_ids            = [module.security_group.security_group_id]
-  cluster_service_cidr              = "10.100.0.0/16" 
-
-  min_size     = 1
-  max_size     = 5
-  desired_size = 1
-
-  instance_types = ["t3.medium"]
-  capacity_type  = "SPOT"
-
-  labels = {
-    Environment = "test"
-    GithubRepo  = "terraform-aws-eks"
-    GithubOrg   = "terraform-aws-modules"
-  }
-
-  taints = {
-    dedicated = {
-      key    = "dedicated"
-      value  = "gpuGroup"
-      effect = "NO_SCHEDULE"
+  cluster_addons = {
+    coredns = {
+      most_recent = true
+    }
+    kube-proxy = {
+      most_recent = true
+    }
+    vpc-cni = {
+      most_recent = true
     }
   }
 
-  tags = {
-    Environment = "dev"
-    Terraform   = "true"
+  vpc_id                   = module.vpc.vpc_id
+  subnet_ids               = module.vpc.private_subnets
+  control_plane_subnet_ids = module.vpc.intra_subnets
+
+  # EKS Managed Node Group(s)
+  eks_managed_node_group_defaults = {
+    ami_type                              = "AL2_x86_64"
+    instance_types                        = ["m5.large"]
+    attach_cluster_primary_security_group = true
   }
+
+  eks_managed_node_groups = {
+    ascode-cluster-wg = {
+      min_size     = 1
+      max_size     = 2
+      desired_size = 1
+
+      instance_types = ["t3.large"]
+      capacity_type  = "SPOT"
+
+      tags = {
+        ExtraTag = "room2-tag"
+      }
+    }
+  }
+  tags = local.tags
 }

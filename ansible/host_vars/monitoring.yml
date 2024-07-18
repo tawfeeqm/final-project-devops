@@ -1,8 +1,0 @@
----
-monitoring_ansible_host: "{{ monitoring_ip_address }}"
-monitoring_ansible_user: ubuntu
-monitoring_ansible_connection: ssh
-
-cicd_ansible_host: "{{ cicd_ip_address }}"
-cicd_ansible_user: ubuntu
-cicd_ansible_connection: ssh

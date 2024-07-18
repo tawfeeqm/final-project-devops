@@ -1,20 +1,7 @@
 ---
-- name: Set up docker and monitoring tools
-  hosts: all
-  become: true
+- name: Deploy to EKS
+  hosts: local
+  gather_facts: false
   roles:
-    - docker
-
-- name: Set up monitoring tools
-  hosts: monitoring
-  become: true
-  roles:
-    - grafana
-    - prometheus
-
-- name: Set up Sonarqube
-  hosts: cicd
-  become: true
-  roles:
-    - sonarqube
+    - namespace
 

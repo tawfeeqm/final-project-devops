@@ -1,4 +1,0 @@
----
-cicd_ansible_host: "{{ cicd_ip_address }}"
-cicd_ansible_user: ubuntu
-cicd_ansible_connection: ssh

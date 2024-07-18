@@ -1,6 +1,0 @@
----
-monitoring_ip_address: 16.170.162.28
-cicd_ip_address: 51.20.98.60
-
-monitoring_ansible_user: ubuntu
-cicd_ansible_user: ubuntu

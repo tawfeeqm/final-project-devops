@@ -1,0 +1,7 @@
+---
+- name: Create a new namespace
+  community.kubernetes.k8s:
+    kubeconfig: ~/.kube/config
+    state: present
+    definition: "{{ lookup('file', 'manifests/namespace.yml') }}"
+

@@ -25,3 +25,15 @@ output "cluster_name" {
 output "cluster_endpoint" {
   value = module.eks.cluster_endpoint
 }
+
+output "eks_oidc_issuer" {
+  value = module.eks.eks_oidc_issuer
+}
+
+output "eks_oidc_arn" {
+  value = module.iam_oidc.eks_oidc_arn
+}
+
+output "eks_autoscaler_arn" {
+  value = module.eks_autoscaler.eks_cluster_autoscaler_arn
+}

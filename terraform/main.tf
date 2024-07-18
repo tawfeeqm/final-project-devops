@@ -63,10 +63,6 @@ module "nodes" {
   private_subnet_ids = module.subnets.private_subnet_ids
 }
 
-output "eks_oidc_issuer" {
-  value = module.eks.eks_oidc_issuer
-}
-
 module "iam_oidc" {
   source           = "./modules/iam-oidc"
   eks_oidc_issuer  = module.eks.eks_oidc_issuer
@@ -78,3 +74,8 @@ module "iam_test" {
   eks_oidc_arn    = module.iam_oidc.eks_oidc_arn
 }
 
+module "eks_autoscaler" {
+  source          = "./modules/eks-autoscaler"
+  eks_oidc_issuer = module.eks.eks_oidc_issuer
+  eks_oidc_arn    = module.iam_oidc.eks_oidc_arn
+}

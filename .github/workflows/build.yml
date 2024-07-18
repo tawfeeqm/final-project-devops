@@ -65,7 +65,7 @@ jobs:
         aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
 
     - name: Set up kubectl
-      uses: actions/kubectl@master
+      uses: actions-hub/kubectl@master
       with:
         version: '1.18'
 

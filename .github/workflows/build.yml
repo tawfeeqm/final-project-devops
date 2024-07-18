@@ -49,9 +49,7 @@ jobs:
     - name: Update Helm Repos
       run: helm repo update
 
-    - name: Install AWS EBS CSI Driver
-      run: helm install aws-ebs-csi-driver aws-ebs-csi-driver/aws-ebs-csi-driver --namespace kube-system
-
+   
     - name: Install AWS CLI
       run: |
         sudo apt-get update
@@ -74,6 +72,9 @@ jobs:
 
     - name: Set Kubernetes context to the desired namespace
       run: kubectl config set-context --current --namespace=${{ secrets.K8S_NAMESPACE }}
+    
+    - name: Install AWS EBS CSI Driver
+      run: helm install aws-ebs-csi-driver aws-ebs-csi-driver/aws-ebs-csi-driver --namespace kube-system
 
     - name: Build and Push Backend Docker Image
       run: |

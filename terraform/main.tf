@@ -1,5 +1,6 @@
 terraform {
   backend "s3" {
+
     bucket         = "expensy-terraform-state"
     key            = "states/terraform.tfstate"
     region         = "eu-north-1"
@@ -8,14 +9,6 @@ terraform {
   }
 }
 
-#module "ref" {                                               
- # source      = "./modules/s3"
- # 
-#}
-
-provider "aws" {
-  region = var.region
-}
 
 terraform {
   required_providers {

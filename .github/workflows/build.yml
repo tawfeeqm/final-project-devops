@@ -65,9 +65,9 @@ jobs:
         aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
 
     - name: Set up kubectl
-      uses: actions-hub/kubectl@v1
+      uses: actions/kubectl@v2
       with:
-        version: 'v1.18.5'
+        version: '1.18'
 
     - name: Update kubeconfig
       run: aws eks --region ${{ secrets.AWS_REGION }} update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAMESPACE }}
@@ -88,7 +88,7 @@ jobs:
         docker push ${{ secrets.DOCKER_USERNAME }}/expensy-frontend:latest
 
     - name: Ansible Playbook for Monitoring and Logging
-      uses: stephengroat/ansible-playbook-action@v1
+      uses: dawidd6/action-ansible-playbook@v2
       with:
         playbook: ansible/playbook.yml
 

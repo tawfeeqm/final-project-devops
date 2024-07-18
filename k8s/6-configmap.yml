@@ -8,3 +8,5 @@ data:
   MONGO_INITDB_ROOT_USERNAME: "root"
   MONGO_INITDB_ROOT_PASSWORD: "example"
   REDIS_URL: "redis://redis:6379"
+
+  NEXT_PUBLIC_API_URL: a977f4bb05e12477e9d584543342cdcd-1767501361.eu-north-1.elb.amazonaws.com:8706

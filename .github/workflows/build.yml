@@ -5,7 +5,7 @@ name: Deploy Expency Application
 
 on:
   push:
-    branches: [ "main", "feature/t-asnbile-eks-setup"]
+    branches: [ "feature/t-asnbile-eks-setup"]
   pull_request:
     branches: [ "main" ]
 

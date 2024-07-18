@@ -1,0 +1,11 @@
+---
+- name: Install Docker using geerlingguy.docker role
+  include_role:
+    name: geerlingguy.docker
+
+- name: Ensure Docker is restarted
+  systemd:
+    name: docker
+    state: restarted
+  notify: Restart Docker
+

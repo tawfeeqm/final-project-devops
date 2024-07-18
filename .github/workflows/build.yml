@@ -54,7 +54,17 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y awscli
-
+    
+    - name: Debug AWS Credentials
+      run: |
+        echo "AWS Access Key ID: ${AWS_ACCESS_KEY_ID}"
+        echo "AWS Secret Access Key: ${AWS_SECRET_ACCESS_KEY}"
+        echo "AWS Region: ${AWS_REGION}"
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.TAWFEEQ_AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.TAWFEEQ_AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: ${{ secrets.AWS_REGION }}
+    
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:

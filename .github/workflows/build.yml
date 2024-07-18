@@ -67,7 +67,8 @@ jobs:
     - name: Set up kubectl
       uses: actions-hub/kubectl@v1
       with:
-        version: '1.18'
+        version: 'v1.18.5'
+
     - name: Update kubeconfig
       run: aws eks --region ${{ secrets.AWS_REGION }} update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAMESPACE }}
 
@@ -93,4 +94,5 @@ jobs:
 
     - name: Setup Ansible Playbook
       run: |
+        ansible-galaxy collection install community.kubernetes
         ansible-playbook ansible/playbook.yml

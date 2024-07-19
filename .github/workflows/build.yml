@@ -73,9 +73,10 @@ jobs:
         aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Set up kubectl
-      uses: actions-hub/kubectl@master
+      uses: azure/setup-kubectl@v3
       with:
-        version: '1.18'
+        version: 'v1.15.0'
+      id: install
 
     - name: Update kubeconfig
       run: aws eks --region ${{ secrets.AWS_REGION }} update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAMESPACE }}

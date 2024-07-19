@@ -10,3 +10,9 @@ data:
   REDIS_URL: "redis://redis:6379"
 
   NEXT_PUBLIC_API_URL: a977f4bb05e12477e9d584543342cdcd-1767501361.eu-north-1.elb.amazonaws.com:8706
+  .env: |
+    PORT=8706
+    DATABASE_URI: mongodb://root:example@mongo-clusterip:27017
+    REDIS_HOST: redis-clusterip
+    REDIS_PORT: 6379
+    REDIS_PASSWORD: someredispassword

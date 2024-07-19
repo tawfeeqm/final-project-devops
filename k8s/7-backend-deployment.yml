@@ -19,25 +19,23 @@ spec:
             - containerPort: 8706
           env:
             - name: DATABASE_URI
-              valueFrom:
-                configMapKeyRef:
-                  name: expensy-config
-                  key: DATABASE_URI
-            - name: MONGO_INITDB_ROOT_USERNAME
-              valueFrom:
-                configMapKeyRef:
-                  name: expensy-config
-                  key: MONGO_INITDB_ROOT_USERNAME
-            - name: MONGO_INITDB_ROOT_PASSWORD
-              valueFrom:
-                configMapKeyRef:
-                  name: expensy-config
-                  key: MONGO_INITDB_ROOT_PASSWORD
-            - name: REDIS_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: expensy-config
-                  key: REDIS_URL 
+              value: "mongodb://root:example@mongodb-clusterip:27017"
+            - name: REDIS_HOST
+              value: "redis-clusterip"
+            - name: REDIS_PORT
+              value: "6379"              
+            - name: REDIS_PASSWORD
+              value: "someredispassword"
+          volumeMounts:
+            - name: config
+              mountPath: /.env
+      volumes:
+        - name: config
+          configMap:
+            name: expensy-config
+            items:
+              - key: .env
+                path: .env
 ---
 apiVersion: v1
 kind: Service
@@ -50,3 +48,4 @@ spec:
       targetPort: 8706
   selector:
     app: backend
+
